@@ -22,7 +22,7 @@ frontend/
 └── src/
     ├── main.jsx            # entry React
     ├── App.jsx             # komposisi halaman
-    ├── index.css           # seluruh stylesheet (port 1:1 dari HTML sumber)
+    ├── index.css           # token @theme + CSS komponen (hero/glass/reveal)
     ├── i18n/
     │   ├── content.js      # kamus konten ID / EN
     │   └── LangContext.jsx # context bahasa + localStorage
@@ -40,6 +40,10 @@ frontend/
 
 ## Catatan
 
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/vite`, token di `@theme`, tanpa
+  config file). Layout/permukaan memakai utility di JSX; hero scrollytelling,
+  glass nav/tab-bar, state `on-dark`/`act`, dan geometri footer reveal tetap CSS
+  di `src/index.css` karena diukur/di-toggle JavaScript.
 - **Logika scroll** (hero scrollytelling, reveal "Thank you", scroll-spy, on-dark)
   dipindahkan ke `useEffect` dengan ref — matematika progres (0–1) sama
   persis dengan JS asli, sehingga animasinya reversibel mengikuti scroll.

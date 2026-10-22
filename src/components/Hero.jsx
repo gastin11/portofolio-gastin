@@ -137,9 +137,12 @@ export default function Hero() {
   }
 
   return (
-    <div className="hero-wrap" id="hw" ref={wrapRef}>
-      <div className="stage">
-        <div className="c" ref={boxRef}>
+    <div className="relative h-[460vh]" id="hw" ref={wrapRef}>
+      <div className="sticky top-0 flex h-screen flex-col overflow-hidden pt-[60px] max-md:pt-6">
+        <div
+          className="relative flex flex-1 flex-col items-center justify-center px-7 text-center"
+          ref={boxRef}
+        >
           <div className="start" ref={startRef} />
           <h1 className="hl" ref={h1Ref}>
             <span className="l1">

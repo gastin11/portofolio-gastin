@@ -84,7 +84,11 @@ export default function TabBar() {
   }
 
   return (
-    <div className="tabbar" role="navigation" ref={barRef}>
+    <div
+      className="tabbar tabbar-glass fixed left-3 right-3 bottom-[calc(10px+env(safe-area-inset-bottom,0px))] z-[60] flex justify-between gap-0.5 rounded-[28px] p-[7px] md:hidden"
+      role="navigation"
+      ref={barRef}
+    >
       <a className="tb" href="#hw" onClick={scrollToTop}>
         {/* Ganti placeholder dengan <img src="images/logo.svg" alt="Logo" /> */}
         <span className="tph" />

@@ -1,698 +1,454 @@
 /* ============================================================
-   Design tokens & global styles — port of the original
-   single-file HTML stylesheet. All colors flow through CSS
-   variables in :root so they are easy to swap later.
+   Design tokens & global styles.
+   - Token warna/radius/font hidup di @theme (Tailwind v4) dan
+     disinkronkan dengan design.md §3.
+   - Nama token lama (--bg, --pri, …) tetap ada sebagai alias agar
+     CSS komponen di bawah tidak perlu diubah.
+   - Dark mode = flip variabel (bukan varian `dark:` Tailwind).
+   - Layout/permukaan memakai utility Tailwind di JSX; yang tetap di
+     sini adalah: hero scrollytelling (diukur JS), glass chrome,
+     state imperatif (on-dark / act), dan geometri footer reveal.
    ============================================================ */
+@import "tailwindcss";
+
+@theme {
+  /* §3.1 warna tema terang (nilai gelap di-flip di blok :root bawah) */
+  --color-bg: #f6f1e7;
+  --color-ink: #101010;
+  --color-pri: #2d3fe3;
+  --color-lime: #d6f25b;
+  --color-lilac: #cdbdff;
+  --color-peach: #ffb99a;
+  --color-dark: #0f0f12;
+  --color-card: #fff;
+  --color-mute: #6b675e;
+  /* §3.3 warna fixed */
+  --color-brand: #e0432f;
+
+  /* §3.7 satu-satunya breakpoint desain (820px) → md: / max-md:.
+     51.3125rem = 821px supaya `max-md:` tepat sama dengan
+     `@media (max-width: 820px)` (varians min-width memakai >=). */
+  --breakpoint-md: 51.3125rem;
+
+  /* §3.5 radius */
+  --radius-pill: 99px;
+  --radius-pc: 44px;
+  --radius-shot: 28px;
+  --radius-box: 60px;
+  --radius-reveal: 48px;
+
+  /* §3.4 tipografi */
+  --font-disp: 'Anton', 'Impact', sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+/* Alias token lama → token @theme (dipakai CSS komponen di bawah).
+   Dark mode cukup mem-flip --color-*, alias otomatis ikut. */
 :root {
-  --bg: #f6f1e7;
-  --ink: #101010;
-  --pri: #2d3fe3;
-  --lime: #d6f25b;
-  --lilac: #cdbdff;
-  --peach: #ffb99a;
-  --dark: #0f0f12;
-  --card: #fff;
-  --mute: #6b675e;
+  --bg: var(--color-bg);
+  --ink: var(--color-ink);
+  --pri: var(--color-pri);
+  --lime: var(--color-lime);
+  --lilac: var(--color-lilac);
+  --peach: var(--color-peach);
+  --dark: var(--color-dark);
+  --card: var(--color-card);
+  --mute: var(--color-mute);
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #14141a;
-    --ink: #f6f1e7;
-    --pri: #7c8bff;
-    --card: #1d1d26;
-    --mute: #a9a69d;
-    --dark: #0a0a0d;
+    --color-bg: #14141a;
+    --color-ink: #f6f1e7;
+    --color-pri: #7c8bff;
+    --color-card: #1d1d26;
+    --color-mute: #a9a69d;
+    --color-dark: #0a0a0d;
   }
 }
 :root[data-theme='dark'] {
-  --bg: #14141a;
-  --ink: #f6f1e7;
-  --pri: #7c8bff;
-  --card: #1d1d26;
-  --mute: #a9a69d;
-  --dark: #0a0a0d;
-}
-* {
-  box-sizing: border-box;
-  margin: 0;
-}
-html {
-  background: #e0432f;
-  scroll-behavior: smooth;
-  scroll-padding-top: env(safe-area-inset-top, 0px);
-}
-body {
-  background: transparent;
-  color: var(--ink);
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-a {
-  color: inherit;
-}
-.disp {
-  font-family: 'Anton', 'Impact', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 0.9;
-}
-.serif {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
+  --color-bg: #14141a;
+  --color-ink: #f6f1e7;
+  --color-pri: #7c8bff;
+  --color-card: #1d1d26;
+  --color-mute: #a9a69d;
+  --color-dark: #0a0a0d;
 }
 
-/* ---------- Navbar (kapsul glass terpisah, grid 3 kolom) ---------- */
-nav {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  padding: 14px 28px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  pointer-events: none;
-}
-nav > * {
-  pointer-events: auto;
-}
-nav .logo,
-nav ul,
-nav .cta {
-  background: color-mix(in srgb, var(--bg) 42%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s, color 0.3s, border-color 0.3s;
-}
-nav.on-dark ul,
-nav.on-dark .cta {
-  background: rgba(24, 24, 30, 0.5);
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 16px rgba(0, 0, 0, 0.25);
-  color: #f6f1e7;
-}
-nav .cta:hover {
-  background: var(--pri);
-  border-color: var(--pri);
-  color: #fff;
-}
-nav .logo {
-  justify-self: start;
-  padding: 6px 12px;
-  display: grid;
-  place-items: center;
-  border-radius: 99px;
-  text-decoration: none;
-}
-.lg {
-  width: 36px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border: 1.5px dashed currentColor;
-  border-radius: 8px;
-  font: 700 9px 'Space Mono', monospace;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.85;
-  color: var(--pri);
-}
-nav .logo img {
-  height: 26px;
-  width: auto;
-  display: block;
-}
-nav .logo:has(img) .lg {
-  display: none;
-}
-nav ul {
-  display: flex;
-  gap: 26px;
-  list-style: none;
-  padding: 12px 28px;
-  margin: 0;
-  border-radius: 99px;
-}
-nav a {
-  text-decoration: none;
-  font-size: 12px;
-}
-nav ul a {
-  transition: color 0.2s;
-}
-nav ul a:hover {
-  color: var(--pri);
-}
-.nr {
-  justify-self: end;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-nav .cta {
-  padding: 11px 20px;
-  line-height: 1.2;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 99px;
-  text-decoration: none;
-  transition: 0.2s;
-}
-nav .lang {
-  font: 700 12px 'Space Mono', monospace;
-  line-height: 1.2;
-  background: #e0432f;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 99px;
-  padding: 11px 16px;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-  transition: transform 0.25s, filter 0.25s;
-}
-nav .lang span,
-nav .lang i {
-  opacity: 0.55;
-  transition: opacity 0.2s;
-}
-nav .lang i {
-  font-style: normal;
-  margin: 0 5px;
-}
-nav .lang span.on {
-  opacity: 1;
-}
-nav .lang:hover {
-  transform: scale(1.04);
-  filter: brightness(1.08);
-}
-
-/* ---------- Hero scrollytelling ---------- */
-.hero-wrap {
-  height: 460vh;
-  position: relative;
-}
-.stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding-top: 60px;
-}
-.c {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding: 0 28px;
-  text-align: center;
-}
-.start {
-  width: 140px;
-  height: 140px;
-  flex: none;
-}
-h1.hl {
-  font-size: clamp(34px, 5.6vw, 80px);
-  line-height: 1.05;
-  font-weight: 400;
-  max-width: 1100px;
-  word-spacing: -0.06em;
-  letter-spacing: -0.005em;
-}
-.hl .l1,
-.hl .l2 {
-  display: block;
-}
-.hl .l1 {
-  white-space: nowrap;
-}
-.hl .l2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2px;
-}
-.hl .w {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  vertical-align: bottom;
-  padding: 0 0.02em;
-  will-change: transform, opacity;
-}
-.hl .disp {
-  font-size: 1em;
-  color: var(--ink);
-}
-.slot {
-  display: inline-block;
-  width: 0;
-  height: 1px;
-  vertical-align: middle;
-}
-.photo.pic {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 3;
-  width: 88px;
-  will-change: transform;
-  border-radius: 50%;
-  aspect-ratio: 1;
-  box-shadow: 0 0 0 5px var(--bg), 0 0 0 6.5px var(--ink);
-  display: grid;
-  place-items: center;
-  color: #fff;
-  background: var(--pri);
-  overflow: hidden;
-}
-.photo.pic::after {
-  display: none;
-}
-.photo.pic img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  display: block;
-}
-.pic small {
-  font-size: 11px;
-  padding: 0;
-  opacity: 0.8;
-}
-.bio {
-  max-width: 640px;
-  margin-top: 26px;
-  padding-top: 22px;
-  border-top: 1px solid transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  text-align: center;
-  font-size: 12.5px;
-}
-.bio .role {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--pri);
-  line-height: 1.6;
-}
-.bio .lead {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  font-size: clamp(24px, 3vw, 38px);
-  line-height: 1.12;
-  color: var(--ink);
-  margin: 0;
-  max-width: 560px;
-}
-.bio .desc {
-  font-size: 12.5px;
-  line-height: 1.8;
-  color: var(--mute);
-  margin: 0;
-  max-width: 520px;
-}
-.bio .b {
-  opacity: 0;
-  filter: blur(5px);
-  will-change: transform, opacity, filter;
-}
-.btns {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 2px;
-}
-.btn {
-  font: 700 12px 'Space Mono', monospace;
-  text-decoration: none;
-  padding: 12px 20px;
-  border-radius: 99px;
-  border: 1.5px solid var(--ink);
-  color: var(--ink);
-  transition: transform 0.25s, background 0.25s, color 0.25s;
-}
-.btn.pri {
-  background: var(--pri);
-  border-color: var(--pri);
-  color: #fff;
-}
-.btn:hover {
-  transform: translateY(-2px);
-}
-.btn:not(.pri):hover {
-  background: var(--ink);
-  color: var(--bg);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .btn.pri {
-    color: #0f0f12;
-  }
-}
-.hint {
-  position: absolute;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: none;
-  border: 0;
-  cursor: pointer;
-  padding: 6px 10px;
-  font: inherit;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--mute);
-  transition: color 0.2s;
-}
-.hint:hover {
-  color: var(--pri);
-}
-
-/* ---------- Seksi umum ---------- */
-section {
-  padding: 90px 28px 70px;
-  max-width: 1300px;
-  margin: auto;
-}
-section > small {
-  display: block;
-  margin-bottom: 18px;
-}
-h2 {
-  font-size: clamp(54px, 10vw, 150px);
-}
-
-/* ---------- Seksi gelap "Tentang" ---------- */
-.dark {
-  background: var(--dark);
-  color: #f6f1e7;
-  max-width: none;
-  padding: 0;
-}
-.dark > div {
-  max-width: 1300px;
-  margin: auto;
-  padding: 90px 28px;
-}
-.dark h3 {
-  font-size: clamp(34px, 6vw, 84px);
-  font-weight: 400;
-  line-height: 1.02;
-  max-width: 1000px;
-}
-.dark h3 em {
-  color: var(--lime);
-}
-.dark h3 .g {
-  color: #6e6e76;
-}
-.cols {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 70px;
-  border-top: 1px solid #333;
-  padding-top: 30px;
-}
-.cols small {
-  color: var(--lime);
-  display: block;
-  margin-bottom: 8px;
-}
-.cols p {
-  color: #bdbab2;
-}
-
-/* ---------- Kartu proyek ---------- */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 18px;
-  margin-top: 40px;
-}
-.pc {
-  border-radius: 44px;
-  padding: 28px;
-  min-height: 430px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: #101010;
-  text-decoration: none;
-  transition: 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.pc:hover {
-  transform: translateY(-6px) rotate(-0.6deg);
-}
-.pc .disp {
-  font-size: clamp(30px, 4vw, 54px);
-}
-.pc small {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.pc small i {
-  font-style: normal;
-  border: 1.5px solid #101010;
-  border-radius: 99px;
-  padding: 1px 10px;
-  font-size: 11px;
-}
-.p1 {
-  grid-column: span 7;
-  background: var(--pri);
-  color: #fff;
-}
-.p1 small i {
-  border-color: #fff;
-}
-.p2 {
-  grid-column: span 5;
-  background: var(--lime);
-}
-.p3 {
-  grid-column: span 5;
-  background: var(--lilac);
-}
-.p4 {
-  grid-column: span 7;
-  background: var(--peach);
-}
-.no {
-  position: absolute;
-  right: 24px;
-  top: 18px;
-  font-size: 12px;
-}
-.shot {
-  position: relative;
-  flex: 1;
-  min-height: 190px;
-  margin: 18px 0;
-  border-radius: 28px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.3);
-  border: 1.5px dashed rgba(16, 16, 16, 0.35);
-  display: grid;
-  place-items: center;
-}
-.p1 .shot {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.55);
-}
-.shot .ph {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.65;
-}
-.shot img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.pc:hover .shot img {
-  transform: scale(1.05);
-}
-.shot:has(img) {
-  border: 0;
-  background: none;
-}
-
-/* ---------- Layanan ---------- */
-.svc {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  margin-top: 40px;
-  border-top: 1.5px solid var(--ink);
-}
-.svc div {
-  padding: 24px 18px 60px;
-  border-right: 1.5px solid var(--ink);
-  transition: 0.25s;
-}
-.svc div:last-child {
-  border: 0;
-}
-.svc div:hover {
-  background: var(--pri);
-  color: #fff;
-}
-.svc b {
-  display: block;
-  font-family: 'Anton', 'Impact', sans-serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  font-size: 26px;
-  line-height: 1;
-  margin: 34px 0 12px;
-}
-
-/* ---------- CTA kontak ---------- */
-.cta-box {
-  background: var(--pri);
-  color: #fff;
-  border-radius: 60px;
-  text-align: center;
-  margin: 10px auto 0;
-  width: calc(100% - 56px);
-  max-width: 1244px;
-  padding: 80px 32px 84px;
-}
-.cta-box small {
-  display: block;
-  margin-bottom: 26px;
-  letter-spacing: 0.08em;
-}
-.cta-box h2 {
-  font-size: clamp(40px, 7.2vw, 108px);
-  line-height: 0.98;
-}
-.cta-box h2 em {
-  display: inline-block;
-  line-height: 1;
-  margin: 0 0.06em;
-  color: var(--lime);
-  font-family: 'Instrument Serif', serif;
-  font-weight: 400;
-  text-transform: none;
-  font-size: 0.95em;
-}
-.cta-box a.mail {
-  display: inline-block;
-  margin-top: 38px;
-  background: var(--lime);
-  color: #101010;
-  padding: 14px 28px;
-  border-radius: 99px;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-/* ---------- Footer sosial ---------- */
-footer {
-  margin-top: 34px;
-  padding: 0 28px;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  max-width: 1300px;
-  margin-left: auto;
-  margin-right: auto;
-}
-footer a {
-  margin: 0 10px;
-  font-size: 12px;
-}
-
-/* ---------- Thank you (footer reveal) ---------- */
-.reveal-main {
-  position: relative;
-  z-index: 1;
-  background: var(--bg);
-  margin-bottom: clamp(120px, 18vw, 230px);
-  padding-bottom: 50px;
-  border-radius: 0 0 48px 48px;
-}
-.thanks {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: clamp(120px, 18vw, 230px);
-  z-index: 0;
-  background: #e0432f;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.ty {
-  font-size: clamp(44px, 9vw, 130px);
-  line-height: 0.95;
-  color: #fff;
-  transform: translateY(70%);
-  opacity: 0;
-  will-change: transform, opacity;
-}
-.thanks small {
-  margin-top: 6px;
-  opacity: 0.85;
-  font-size: 11px;
-}
-
-/* ---------- Tab bar mobile ---------- */
-.tabbar {
-  display: none;
-}
-
-@media (max-width: 820px) {
-  nav {
-    display: none;
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
   }
   html {
-    scroll-padding-top: 16px;
+    background: #e0432f;
+    scroll-behavior: smooth;
+    scroll-padding-top: env(safe-area-inset-top, 0px);
   }
-  .tabbar {
+  body {
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a {
+    color: inherit;
+  }
+  /* Rule elemen `section` sengaja dipertahankan: panel `.thanks` juga
+     sebuah <section> dan mewarisi max-width/padding ini (perilaku lama). */
+  section {
+    padding: 90px 28px 70px;
+    max-width: 1300px;
+    margin: auto;
+  }
+  section > small {
+    display: block;
+    margin-bottom: 18px;
+  }
+  h2 {
+    font-size: clamp(54px, 10vw, 150px);
+    /* preflight Tailwind me-reset font-weight heading; pertahankan
+       perilaku UA (bold) yang dipakai semua h2 sekarang. */
+    font-weight: 700;
+  }
+  /* preflight Tailwind memakai `small { font-size: 80% }`, sedangkan UA
+     memakai keyword `smaller` (≈83.3%). Kembalikan ke nilai lama supaya
+     tinggi baris label tidak bergeser. */
+  small {
+    font-size: smaller;
+  }
+
+  @media (max-width: 820px) {
+    html {
+      scroll-padding-top: 16px;
+    }
+    section {
+      padding: 64px 20px 48px;
+    }
+    section h2 {
+      font-size: clamp(40px, 12vw, 72px);
+    }
+  }
+}
+
+@layer components {
+  /* ---------- Type faces ---------- */
+  .disp {
+    font-family: 'Anton', 'Impact', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.9;
+  }
+  .serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* ---------- Navbar: kapsul glass (nilai persis §3.5) ---------- */
+  .capsule {
+    background: color-mix(in srgb, var(--bg) 42%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+  }
+  /* `on-dark` di-toggle Navbar.jsx via classList — bukan state React,
+     jadi wajib tetap berupa selector CSS. Hanya kapsul menu & CTA yang
+     ikut gelap; kapsul logo TIDAK (perilaku asli). */
+  .on-dark ul.capsule,
+  .on-dark .cta {
+    background: rgba(24, 24, 30, 0.5);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 16px rgba(0, 0, 0, 0.25);
+    color: #f6f1e7;
+  }
+  .lg {
+    width: 36px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border: 1.5px dashed currentColor;
+    border-radius: 8px;
+    font: 700 9px 'Space Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    color: var(--pri);
+  }
+  nav .logo img {
+    height: 26px;
+    width: auto;
+    display: block;
+  }
+  nav .logo:has(img) .lg {
+    display: none;
+  }
+
+  /* ---------- Hero scrollytelling ----------
+     Jangan dipindah ke utility: Hero.jsx mengukur lebar kata
+     (`scrollWidth`), tinggi `.l2`/`.bio`, dan menulis inline style
+     (max-width, translate, blur) berdasarkan box model di bawah ini. */
+  .start {
+    width: 140px;
+    height: 140px;
+    flex: none;
+  }
+  h1.hl {
+    font-size: clamp(34px, 5.6vw, 80px);
+    line-height: 1.05;
+    font-weight: 400;
+    max-width: 1100px;
+    word-spacing: -0.06em;
+    letter-spacing: -0.005em;
+  }
+  .hl .l1,
+  .hl .l2 {
+    display: block;
+  }
+  .hl .l1 {
+    white-space: nowrap;
+  }
+  .hl .l2 {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2px;
+  }
+  .hl .w {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding: 0 0.02em;
+    will-change: transform, opacity;
+  }
+  .hl .disp {
+    font-size: 1em;
+    color: var(--ink);
+  }
+  .slot {
+    display: inline-block;
+    width: 0;
+    height: 1px;
+    vertical-align: middle;
+  }
+  .photo.pic {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    width: 88px;
+    will-change: transform;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    box-shadow: 0 0 0 5px var(--bg), 0 0 0 6.5px var(--ink);
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: var(--pri);
+    overflow: hidden;
+  }
+  .photo.pic::after {
+    display: none;
+  }
+  .photo.pic img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+  .pic small {
+    font-size: 11px;
+    padding: 0;
+    opacity: 0.8;
+  }
+  .bio {
+    max-width: 640px;
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+    font-size: 12.5px;
+  }
+  .bio .role {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pri);
+    line-height: 1.6;
+  }
+  .bio .lead {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(24px, 3vw, 38px);
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    max-width: 560px;
+  }
+  .bio .desc {
+    font-size: 12.5px;
+    line-height: 1.8;
+    color: var(--mute);
+    margin: 0;
+    max-width: 520px;
+  }
+  .bio .b {
+    opacity: 0;
+    filter: blur(5px);
+    will-change: transform, opacity, filter;
+  }
+  .btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .btn {
+    font: 700 12px 'Space Mono', monospace;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 99px;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    transition: transform 0.25s, background 0.25s, color 0.25s;
+  }
+  .btn.pri {
+    background: var(--pri);
+    border-color: var(--pri);
+    color: #fff;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+  .btn:not(.pri):hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .btn.pri {
+      color: #0f0f12;
+    }
+  }
+  .hint {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 6px 10px;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--mute);
+    transition: color 0.2s;
+  }
+  .hint:hover {
+    color: var(--pri);
+  }
+
+  /* ---------- Seksi gelap "Tentang" ---------- */
+  .g {
+    color: #6e6e76;
+  }
+
+  /* ---------- Kartu proyek: hanya perilaku hover yang tetap di CSS
+     (v4 menerapkan translate/rotate sebagai properti terpisah sehingga
+     urutan transform berbeda dari `transform: translate() rotate()`). */
+  .pc:hover {
+    transform: translateY(-6px) rotate(-0.6deg);
+  }
+  /* Preview gambar kartu proyek: gaya ini menempel ke `.shot img` supaya
+     cukup menaruh <img> di JSX (lihat design.md §8) tanpa utility. */
+  .shot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .pc:hover .shot img {
+    transform: scale(1.05);
+  }
+
+  /* ---------- CTA kontak: tipografi bersarang ---------- */
+  .cta-box h2 {
+    font-size: clamp(40px, 7.2vw, 108px);
+    line-height: 0.98;
+  }
+  .cta-box h2 em {
+    display: inline-block;
+    line-height: 1;
+    margin: 0 0.06em;
+    color: var(--lime);
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    text-transform: none;
+    font-size: 0.95em;
+  }
+
+  /* ---------- Thank you / footer reveal ----------
+     margin-bottom `.reveal-main` dan tinggi `.thanks` WAJIB memakai
+     clamp yang identik; jangan dipisah ke utility. */
+  .reveal-main {
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
+    margin-bottom: clamp(120px, 18vw, 230px);
+    padding-bottom: 50px;
+    border-radius: 0 0 48px 48px;
+  }
+  .thanks {
     position: fixed;
-    z-index: 60;
-    left: 12px;
-    right: 12px;
-    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-    padding: 7px;
-    gap: 2px;
-    justify-content: space-between;
-    border-radius: 28px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: clamp(120px, 18vw, 230px);
+    z-index: 0;
+    background: #e0432f;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .ty {
+    font-size: clamp(44px, 9vw, 130px);
+    line-height: 0.95;
+    color: #fff;
+    transform: translateY(70%);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .thanks small {
+    margin-top: 6px;
+    opacity: 0.85;
+    font-size: 11px;
+  }
+
+  /* ---------- Tab bar mobile (glass + tab) ----------
+     Warna tab aktif & on-dark di-toggle TabBar.jsx via classList,
+     jadi seluruh blok ini tetap CSS. */
+  .tabbar-glass {
     background: color-mix(in srgb, var(--bg) 55%, transparent);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     backdrop-filter: blur(20px) saturate(160%);
@@ -733,13 +489,6 @@ footer a {
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .tb.act {
-    color: var(--pri);
-    background: color-mix(in srgb, var(--pri) 14%, transparent);
-  }
-  .tabbar.on-dark .tb.act {
-    color: #9aa6ff;
-  }
   .tb.tl {
     flex: none;
     width: 56px;
@@ -763,96 +512,63 @@ footer a {
   .tb:has(img) .tph {
     display: none;
   }
-  .stage {
-    padding-top: 24px;
+
+  /* ---------- Override mobile ---------- */
+  @media (max-width: 820px) {
+    .hint {
+      bottom: 104px;
+    }
+    h1.hl {
+      font-size: clamp(34px, 10.5vw, 64px);
+    }
+    .reveal-main {
+      margin-bottom: 210px;
+      padding-bottom: 30px;
+      border-radius: 0 0 32px 32px;
+    }
+    .thanks {
+      height: 210px;
+      padding-bottom: 78px;
+    }
+    .ty {
+      font-size: clamp(44px, 15vw, 90px);
+    }
+    .bio {
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 16px;
+    }
+    .bio .lead {
+      font-size: clamp(22px, 6.4vw, 30px);
+    }
+    .bio .desc {
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .btn {
+      padding: 10px 16px;
+      font-size: 11.5px;
+    }
   }
-  .hint {
-    bottom: 104px;
-  }
-  h1.hl {
-    font-size: clamp(34px, 10.5vw, 64px);
-  }
-  section {
-    padding: 64px 20px 48px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  section h2 {
-    font-size: clamp(40px, 12vw, 72px);
-  }
-  .dark > div {
-    padding: 64px 20px;
-  }
-  .dark h3 {
-    font-size: clamp(26px, 7.4vw, 44px);
-  }
-  .cols,
-  .svc {
-    grid-template-columns: 1fr 1fr;
-  }
-  .cols {
-    grid-template-columns: 1fr;
-  }
-  .p1,
-  .p2,
-  .p3,
-  .p4 {
-    grid-column: span 12;
-  }
-  .pc {
-    min-height: 380px;
-    padding: 22px;
-    border-radius: 32px;
-  }
-  .shot {
-    min-height: 160px;
-    border-radius: 22px;
-  }
-  .pc .disp {
-    font-size: clamp(28px, 8vw, 40px);
-  }
-  .cta-box {
-    width: calc(100% - 24px);
-    padding: 56px 20px 60px;
-    border-radius: 36px;
-  }
-  .svc div {
-    padding: 20px 14px 40px;
-    border-bottom: 1.5px solid var(--ink);
-  }
-  .svc div:nth-child(even) {
-    border-right: 0;
-  }
-  .svc b {
-    font-size: 22px;
-    margin: 24px 0 10px;
-  }
-  .reveal-main {
-    margin-bottom: 210px;
-    padding-bottom: 30px;
-    border-radius: 0 0 32px 32px;
-  }
-  .thanks {
-    height: 210px;
-    padding-bottom: 78px;
-  }
-  .ty {
-    font-size: clamp(44px, 15vw, 90px);
-  }
-  .bio {
-    gap: 10px;
-    margin-top: 18px;
-    padding-top: 16px;
-  }
-  .bio .lead {
-    font-size: clamp(22px, 6.4vw, 30px);
-  }
-  .bio .desc {
-    font-size: 12px;
-    line-height: 1.7;
-  }
-  .btn {
-    padding: 10px 16px;
-    font-size: 11.5px;
-  }
+}
+
+/* ---------- Edge case: harus menang atas utility Tailwind ----------
+   Rule di luar layer selalu mengalahkan utilities, jadi dua selector
+   ini aman walau elemennya memakai utility untuk properti yang sama. */
+.shot:has(img) {
+  border: 0;
+  background: none;
+}
+/* Di CSS lama `.p1 .shot` (0,2,0) mengalahkan `.shot:has(img)` (0,1,1),
+   jadi kartu p1 tetap menyisakan latar putih 14% saat gambarnya ada. */
+.p1 .shot:has(img) {
+  background: rgba(255, 255, 255, 0.14);
+}
+/* Tab aktif: `.act` di-set lewat classList (bukan React state). */
+.tb.act {
+  color: var(--pri);
+  background: color-mix(in srgb, var(--pri) 14%, transparent);
+}
+.tabbar.on-dark .tb.act {
+  color: #9aa6ff;
 }
