@@ -75,6 +75,9 @@ export const content = {
         close: 'TUTUP',
         fileName: 'Gastin-Alfiansa-CV.pdf',
         pages: '2 Halaman',
+        zoomIn: 'Perbesar',
+        zoomOut: 'Perkecil',
+        zoomReset: 'Reset 100%',
       },
     },
     about: {
@@ -280,6 +283,9 @@ export const content = {
         close: 'CLOSE',
         fileName: 'Gastin-Alfiansa-CV.pdf',
         pages: '2 Pages',
+        zoomIn: 'Zoom In',
+        zoomOut: 'Zoom Out',
+        zoomReset: 'Reset 100%',
       },
     },
     about: {
