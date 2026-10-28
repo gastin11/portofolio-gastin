@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
-const MIN_ZOOM = 0.5
+const MIN_ZOOM = 0.75
 const MAX_ZOOM = 2.0
 const ZOOM_STEP = 0.25
 
@@ -10,8 +10,7 @@ const ZOOM_STEP = 0.25
  *
  * Fitur:
  * - Pratinjau dokumen PDF langsung via embedded viewer interaktif beresolusi tinggi.
- * - Tampilan mobile otomatis pas 100% selebar layar ponsel (Fit-to-Width) tanpa terpotong dan tanpa perlu geser samping.
- * - Kontrol Zoom (Zoom In, Zoom Out hingga 50%, Reset 100% Fit) di toolbar footer.
+ * - Kontrol Zoom (Zoom In, Zoom Out, Reset 100%) di toolbar footer.
  * - Dukungan multi-interaksi: tombol klik, keyboard (+, -, 0), wheel (Ctrl+scroll), pinch-to-zoom (mobile touch), dan double-click/double-tap.
  * - Tombol unduh langsung (background fetch blob download) di footer modal.
  * - Animasi masuk/keluar halus mengikuti styling editorial site (menggunakan .cv-modal-*).
@@ -20,11 +19,12 @@ const ZOOM_STEP = 0.25
 export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
   const [modalStage, setModalStage] = useState('closed') // 'closed' | 'opening' | 'open' | 'closing'
   const [isDownloading, setIsDownloading] = useState(false)
-  const [zoom, setZoom] = useState(1) // 0.5 | 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2.0
+  const [zoom, setZoom] = useState(1) // 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2.0
 
   const closeTimerRef = useRef(null)
   const rafRef = useRef(null)
   const containerRef = useRef(null)
+  const prevZoomRef = useRef(1)
   const touchDistRef = useRef(null)
   const initialZoomRef = useRef(1)
 
@@ -38,19 +38,10 @@ export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
 
   const handleZoomReset = () => {
     setZoom(1)
-    if (containerRef.current) {
-      containerRef.current.scrollLeft = 0
-    }
   }
 
   const handleToggleZoom = () => {
-    setZoom((prev) => {
-      const next = prev > 1 ? 1 : 1.5
-      if (next === 1 && containerRef.current) {
-        containerRef.current.scrollLeft = 0
-      }
-      return next
-    })
+    setZoom((prev) => (prev > 1 ? 1 : 1.5))
   }
 
   const handleDownload = async (e) => {
@@ -98,10 +89,6 @@ export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
   useEffect(() => {
     if (isOpen) {
       setZoom(1)
-      if (containerRef.current) {
-        containerRef.current.scrollTop = 0
-        containerRef.current.scrollLeft = 0
-      }
       if (closeTimerRef.current) {
         window.clearTimeout(closeTimerRef.current)
         closeTimerRef.current = null
@@ -137,6 +124,22 @@ export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
       if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current)
     }
   }, [isOpen])
+
+  // Pusatkan scroll horizontal saat zoom berubah dari 1 ke > 1
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    if (zoom > 1 && prevZoomRef.current <= 1) {
+      const timer = setTimeout(() => {
+        const maxScroll = container.scrollWidth - container.clientWidth
+        if (maxScroll > 0) {
+          container.scrollLeft = maxScroll / 2
+        }
+      }, 40)
+      return () => clearTimeout(timer)
+    }
+    prevZoomRef.current = zoom
+  }, [zoom])
 
   // Kunci scroll halaman, shortcut keyboard (ESC, +, -, 0)
   const isModalActive = modalStage !== 'closed'
@@ -226,7 +229,7 @@ export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
 
   return createPortal(
     <div
-      className={`cv-modal-backdrop fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 overscroll-contain max-md:p-3 max-md:py-5 ${
+      className={`cv-modal-backdrop fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 overscroll-contain max-md:p-4 max-md:py-6 ${
         modalStage === 'open' ? 'is-open' : modalStage === 'closing' ? 'is-closing' : ''
       }`}
       onClick={onClose}
@@ -235,7 +238,7 @@ export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
       aria-labelledby="cv-modal-title"
     >
       <div
-        className="cv-modal-card relative flex flex-col w-full max-w-[960px] h-[88vh] max-h-[920px] overflow-hidden rounded-[24px] border border-ink/15 bg-bg text-left text-ink shadow-[0_20px_50px_rgba(0,0,0,0.5)] overscroll-contain max-md:w-full max-md:h-[84dvh] max-md:max-h-[680px] max-md:rounded-[22px]"
+        className="cv-modal-card relative flex flex-col w-full max-w-[960px] h-[88vh] max-h-[920px] overflow-hidden rounded-[24px] border border-ink/15 bg-bg text-left text-ink shadow-[0_20px_50px_rgba(0,0,0,0.5)] overscroll-contain max-md:w-full max-md:h-[82dvh] max-md:max-h-[660px] max-md:rounded-[22px]"
         onClick={(e) => e.stopPropagation()}
         style={{ transform: 'translateZ(0)' }}
       >
@@ -268,50 +271,52 @@ export default function CvModal({ isOpen, onClose, cvHref, cvData }) {
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
-          className="relative flex-1 min-h-0 w-full overflow-auto bg-[#161619] p-4 max-md:px-2 max-md:py-2.5 select-none"
+          className="relative flex-1 min-h-0 w-full overflow-auto bg-[#161619] p-4 max-md:p-2.5 select-none"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
-          <div
-            onDoubleClick={handleToggleZoom}
-            title={
-              zoom === 1
-                ? 'Klik ganda untuk memperbesar (150%)'
-                : 'Klik ganda untuk kembali ke ukuran pas layar (100%)'
-            }
-            className={`mx-auto flex flex-col items-center gap-4 transition-all duration-200 ease-out max-md:gap-3 ${
-              zoom === 1 ? 'cursor-zoom-in' : 'cursor-zoom-out'
-            }`}
-            style={{
-              width: zoom === 1 ? '100%' : `${Math.round(zoom * 100)}%`,
-              maxWidth: zoom <= 1 ? '760px' : `${Math.round(760 * zoom)}px`,
-            }}
-          >
-            {/* Halaman 1 */}
-            <div className="w-full overflow-hidden rounded-[8px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-              <picture>
-                <source srcSet="/cv/page-1.webp" type="image/webp" />
-                <img
-                  src="/cv/page-1.png"
-                  alt="Curriculum Vitae Gastin Alfiansa - Halaman 1"
-                  className="block h-auto w-full select-none pointer-events-none"
-                  loading="eager"
-                  decoding="async"
-                />
-              </picture>
-            </div>
+          <div className="flex min-w-full w-max min-h-full justify-center">
+            <div
+              onDoubleClick={handleToggleZoom}
+              title={
+                zoom === 1
+                  ? 'Klik ganda untuk memperbesar (150%)'
+                  : 'Klik ganda untuk kembali ke ukuran asli (100%)'
+              }
+              className={`flex flex-col items-center gap-4 transition-[width,max-width] duration-200 ease-out max-md:gap-3 shrink-0 ${
+                zoom === 1 ? 'cursor-zoom-in' : 'cursor-zoom-out'
+              }`}
+              style={{
+                width: `${Math.round(zoom * 100)}%`,
+                maxWidth: `${Math.round(760 * Math.max(1, zoom))}px`,
+              }}
+            >
+              {/* Halaman 1 */}
+              <div className="w-full overflow-hidden rounded-[8px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+                <picture>
+                  <source srcSet="/cv/page-1.webp" type="image/webp" />
+                  <img
+                    src="/cv/page-1.png"
+                    alt="Curriculum Vitae Gastin Alfiansa - Halaman 1"
+                    className="block h-auto w-full select-none pointer-events-none"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </picture>
+              </div>
 
-            {/* Halaman 2 */}
-            <div className="w-full overflow-hidden rounded-[8px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
-              <picture>
-                <source srcSet="/cv/page-2.webp" type="image/webp" />
-                <img
-                  src="/cv/page-2.png"
-                  alt="Curriculum Vitae Gastin Alfiansa - Halaman 2"
-                  className="block h-auto w-full select-none pointer-events-none"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
+              {/* Halaman 2 */}
+              <div className="w-full overflow-hidden rounded-[8px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+                <picture>
+                  <source srcSet="/cv/page-2.webp" type="image/webp" />
+                  <img
+                    src="/cv/page-2.png"
+                    alt="Curriculum Vitae Gastin Alfiansa - Halaman 2"
+                    className="block h-auto w-full select-none pointer-events-none"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              </div>
             </div>
           </div>
         </div>
