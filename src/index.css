@@ -56,8 +56,6 @@
   --card: var(--color-card);
   --mute: var(--color-mute);
   box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
@@ -84,7 +82,7 @@
     margin: 0;
   }
   html {
-    background: #e0432f;
+    background: var(--bg);
     scroll-behavior: smooth;
     scroll-padding-top: env(safe-area-inset-top, 0px);
   }
