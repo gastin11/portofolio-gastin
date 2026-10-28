@@ -1,6 +1,7 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { useLang } from '../i18n/LangContext.jsx'
 import { navigateToSection } from '../motion/navScroll.js'
+import CvModal from './CvModal.jsx'
 
 /**
  * Ikon SVG kustom untuk ketiga stiker pita hero:
@@ -77,6 +78,7 @@ const STICKER_POSE = [
  */
 export default function Hero() {
   const { lang, t } = useLang()
+  const [isCvOpen, setIsCvOpen] = useState(false)
   const wrapRef = useRef(null)
   const boxRef = useRef(null)
   const h1Ref = useRef(null)
@@ -247,6 +249,7 @@ export default function Hero() {
       // Tahap 2: Saat scroll melewati akhir Hero menuju seksi #about, foto lingkaran
       // bergerak mulus dari slot di Hero menuju #about-photo-slot.
       const aboutSlot = document.getElementById('about-photo-slot')
+      const aboutImg = document.getElementById('about-photo-img')
       let size = heroSize
       let x = heroX
       let y = heroY
@@ -270,8 +273,23 @@ export default function Hero() {
         hidePic = ar.bottom < -40
       }
 
+      // Kunci foto saat telah mendarat di About (e2 >= 0.999).
+      // Foto diserahkan ke elemen statis dokumen (#about-photo-img) sehingga saat scroll
+      // naik-turun di About foto tetap diam di tempatnya (stay) tanpa efek membal/jitter.
+      // Saat scroll kembali ke Hero (reverse), foto statis disembunyikan dan morph aktif kembali.
+      const isDockedInAbout = e2 >= 0.999
+
+      if (aboutSlot) {
+        aboutSlot.style.boxShadow = isDockedInAbout
+          ? '0 0 0 5px #101014, 0 0 0 6.5px rgba(246, 241, 231, 0.45)'
+          : 'none'
+      }
+      if (aboutImg) {
+        aboutImg.style.opacity = isDockedInAbout ? '1' : '0'
+      }
+
       if (pic) {
-        pic.style.visibility = hidePic ? 'hidden' : 'visible'
+        pic.style.visibility = (hidePic || isDockedInAbout) ? 'hidden' : 'visible'
         pic.style.width = `${size}px`
         pic.style.borderRadius = '50%'
         pic.style.boxShadow =
@@ -527,9 +545,13 @@ export default function Hero() {
               >
                 {t.hero.ctaWork}
               </a>
-              <a className="btn" href={t.hero.cvHref}>
+              <button
+                type="button"
+                className="btn cursor-pointer"
+                onClick={() => setIsCvOpen(true)}
+              >
                 {t.hero.ctaCv}
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -550,6 +572,13 @@ export default function Hero() {
           style={{ opacity: 0 }}
         />
       </div>
+
+      <CvModal
+        isOpen={isCvOpen}
+        onClose={() => setIsCvOpen(false)}
+        cvHref={t.hero.cvHref}
+        cvData={t.hero.cvModal}
+      />
     </div>
   )
 }

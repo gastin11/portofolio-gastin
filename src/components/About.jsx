@@ -31,9 +31,17 @@ export default function About() {
             </span>
             <div
               id="about-photo-slot"
-              className="aspect-square w-[104px] shrink-0 rounded-full max-md:w-[78px]"
+              className="relative aspect-square w-[104px] shrink-0 overflow-hidden rounded-full max-md:w-[78px]"
               aria-hidden="true"
-            />
+            >
+              <img
+                id="about-photo-img"
+                src="/images/gastin-about.png"
+                alt="Foto Gastin Alfiansa"
+                className="h-full w-full object-cover object-top select-none pointer-events-none"
+                style={{ opacity: 0 }}
+              />
+            </div>
             <span
               className="serif select-none text-[clamp(64px,7vw,96px)] leading-none text-lime"
               aria-hidden="true"
