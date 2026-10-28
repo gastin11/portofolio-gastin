@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLang } from '../i18n/LangContext.jsx'
+import { navigateToSection } from '../motion/navScroll.js'
 
 /**
  * Navbar desktop — kapsul glass terpisah dalam grid 3 kolom
@@ -18,7 +19,10 @@ export default function Navbar() {
 
     const update = () => {
       const r = dark.getBoundingClientRect()
-      nav.classList.toggle('on-dark', r.top < 50 && r.bottom > 50)
+      nav.classList.toggle(
+        'on-dark',
+        document.documentElement.dataset.portalTop === '1' || (r.top < 50 && r.bottom > 50),
+      )
     }
     update()
     window.addEventListener('scroll', update, { passive: true })
@@ -29,23 +33,21 @@ export default function Navbar() {
     }
   }, [])
 
-  const scrollToTop = (e) => {
-    e.preventDefault()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
   return (
     <nav
       ref={navRef}
       className="pointer-events-none fixed inset-x-0 top-0 z-50 grid grid-cols-[1fr_auto_1fr] px-7 py-3.5 max-md:hidden"
     >
       <a
-        className="logo capsule disp pointer-events-auto grid place-items-center justify-self-start rounded-pill px-3 py-1.5 no-underline"
+        className="logo capsule disp pointer-events-auto grid h-[42px] w-[42px] place-items-center justify-self-start rounded-[14px] p-0 no-underline"
         href="#hw"
         aria-label="Kembali ke beranda"
-        onClick={scrollToTop}
+        onClick={(e) => {
+          e.preventDefault()
+          navigateToSection('hw')
+        }}
       >
-        {/* Ganti placeholder dengan <img src="images/logo.svg" alt="Gastin Alfiansa" /> */}
+        <img src="/images/logo.png" alt="Gastin Alfiansa" />
         <span className="lg">logo</span>
       </a>
       <ul className="capsule pointer-events-auto m-0 flex list-none gap-[26px] rounded-pill px-7 py-3">
@@ -53,6 +55,10 @@ export default function Navbar() {
           <a
             className="text-[12px] no-underline transition-colors duration-200 hover:text-pri"
             href="#about"
+            onClick={(e) => {
+              e.preventDefault()
+              navigateToSection('about')
+            }}
           >
             {t.nav.menu[0]}
           </a>
@@ -61,6 +67,10 @@ export default function Navbar() {
           <a
             className="text-[12px] no-underline transition-colors duration-200 hover:text-pri"
             href="#work"
+            onClick={(e) => {
+              e.preventDefault()
+              navigateToSection('work')
+            }}
           >
             {t.nav.menu[1]}
           </a>
@@ -68,9 +78,25 @@ export default function Navbar() {
         <li>
           <a
             className="text-[12px] no-underline transition-colors duration-200 hover:text-pri"
-            href="#services"
+            href="#experience"
+            onClick={(e) => {
+              e.preventDefault()
+              navigateToSection('experience')
+            }}
           >
             {t.nav.menu[2]}
+          </a>
+        </li>
+        <li>
+          <a
+            className="text-[12px] no-underline transition-colors duration-200 hover:text-pri"
+            href="#services"
+            onClick={(e) => {
+              e.preventDefault()
+              navigateToSection('services')
+            }}
+          >
+            {t.nav.menu[3]}
           </a>
         </li>
       </ul>
@@ -100,6 +126,10 @@ export default function Navbar() {
         <a
           className="cta capsule pointer-events-auto rounded-pill px-5 py-[11px] text-[12px] leading-[1.2] no-underline transition-all duration-200 hover:border-pri hover:bg-pri hover:text-white"
           href="#contact"
+          onClick={(e) => {
+            e.preventDefault()
+            navigateToSection('contact')
+          }}
         >
           {t.nav.contact}
         </a>

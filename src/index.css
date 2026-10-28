@@ -170,21 +170,23 @@
     color: #f6f1e7;
   }
   .lg {
-    width: 36px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
     display: grid;
     place-items: center;
     border: 1.5px dashed currentColor;
-    border-radius: 8px;
-    font: 700 9px 'Space Mono', monospace;
-    letter-spacing: 0.08em;
+    border-radius: 7px;
+    font: 700 8px 'Space Mono', monospace;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     opacity: 0.85;
     color: var(--pri);
   }
   nav .logo img {
-    height: 26px;
-    width: auto;
+    height: 35px;
+    width: 35px;
+    border-radius: 11px;
+    object-fit: cover;
     display: block;
   }
   nav .logo:has(img) .lg {
@@ -240,12 +242,12 @@
     vertical-align: middle;
   }
   .photo.pic {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
-    z-index: 3;
+    z-index: 25;
     width: 88px;
-    will-change: transform;
+    will-change: transform, width, border-radius;
     border-radius: 50%;
     aspect-ratio: 1;
     box-shadow: 0 0 0 5px var(--bg), 0 0 0 6.5px var(--ink);
@@ -254,6 +256,7 @@
     color: #fff;
     background: var(--pri);
     overflow: hidden;
+    pointer-events: none;
   }
   .photo.pic::after {
     display: none;
@@ -272,10 +275,166 @@
     padding: 0;
     opacity: 0.8;
   }
+  .hl-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* Stiker pita 2 baris bertingkat mengelilingi headline hero.
+     Posisi/opasitas/rotasi scroll ditulis inline oleh Hero.jsx pada .stk,
+     sedangkan bentuk potongan & efek tilt hover hidup di .stk-inner. */
+  .stk {
+    position: absolute;
+    z-index: 4;
+    opacity: 0;
+    filter: blur(4px);
+    will-change: transform, opacity, filter;
+    user-select: none;
+  }
+  .stk-0 {
+    top: -16px;
+    left: -26px;
+  }
+  .stk-1 {
+    top: -20px;
+    right: -20px;
+  }
+  .stk-2 {
+    bottom: -32px;
+    right: 11%;
+  }
+  .stk-inner {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    color: #101010;
+    font-family: 'Anton', 'Impact', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    font-size: clamp(14px, 1.35vw, 18px);
+    line-height: 0.94;
+    filter: drop-shadow(0 2px 6px rgba(16, 16, 16, 0.12));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+      filter 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: default;
+  }
+  .stk-lime {
+    --stk-bg: var(--lime);
+  }
+  .stk-lilac {
+    --stk-bg: var(--lilac);
+  }
+  .stk-peach {
+    --stk-bg: var(--peach);
+  }
+  .stk-0:hover .stk-inner {
+    transform: translateY(-3px) scale(1.06) rotate(-3.5deg);
+    filter: drop-shadow(3px 5px 0 var(--ink));
+  }
+  .stk-1:hover .stk-inner {
+    transform: translateY(-3px) scale(1.06) rotate(3.5deg);
+    filter: drop-shadow(-3px 5px 0 var(--ink));
+  }
+  .stk-2:hover .stk-inner {
+    transform: translateY(-3px) scale(1.06) rotate(-3deg);
+    filter: drop-shadow(3px 5px 0 var(--ink));
+  }
+  .stk-r1,
+  .stk-r2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--stk-bg);
+    padding: 5px 9px 4px;
+    white-space: nowrap;
+    position: relative;
+  }
+  .stk-r2 {
+    margin-top: -1px;
+    padding-top: 4px;
+  }
+  .stk-ico {
+    width: 1em;
+    height: 1em;
+    flex: none;
+    display: block;
+  }
+  /* Variasi 1 (Full-stack Developer): baris atas lebih lebar ke kanan */
+  .stk-cut1 .stk-r1 {
+    align-self: stretch;
+    justify-content: space-between;
+    border-radius: 8px 8px 8px 0;
+  }
+  .stk-cut1 .stk-r2 {
+    margin-right: 22px;
+    border-radius: 0 0 8px 8px;
+  }
+  .stk-cut1 .stk-r2::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    right: -8px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 100% 100%, transparent 8px, var(--stk-bg) 8.5px);
+    pointer-events: none;
+  }
+  /* Variasi 2 (System Design): potongan zig-zag / offset kiri-kanan */
+  .stk-cut2 .stk-r1 {
+    margin-right: 18px;
+    border-radius: 8px 8px 0 8px;
+  }
+  .stk-cut2 .stk-r2 {
+    align-self: flex-end;
+    border-radius: 0 8px 8px 8px;
+  }
+  .stk-cut2 .stk-r1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -8px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 100% 0%, transparent 8px, var(--stk-bg) 8.5px);
+    pointer-events: none;
+  }
+  .stk-cut2 .stk-r2::before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: -8px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 0% 100%, transparent 8px, var(--stk-bg) 8.5px);
+    pointer-events: none;
+  }
+  /* Variasi 3 (AI & Otomasi): tab atas pendek, baris bawah melebar ke kanan */
+  .stk-cut3 .stk-r1 {
+    margin-right: 22px;
+    border-radius: 8px 8px 0 0;
+  }
+  .stk-cut3 .stk-r2 {
+    align-self: stretch;
+    justify-content: space-between;
+    border-radius: 0 8px 8px 8px;
+  }
+  .stk-cut3 .stk-r1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -8px;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle at 100% 0%, transparent 8px, var(--stk-bg) 8.5px);
+    pointer-events: none;
+  }
   .bio {
+    width: 100%;
     max-width: 640px;
-    margin-top: 26px;
-    padding-top: 22px;
+    margin-top: 38px;
+    padding-top: 24px;
     border-top: 1px solid transparent;
     display: flex;
     flex-direction: column;
@@ -294,18 +453,46 @@
   .bio .lead {
     font-family: 'Instrument Serif', Georgia, serif;
     font-style: italic;
-    font-size: clamp(24px, 3vw, 38px);
-    line-height: 1.12;
+    font-size: clamp(26px, 3.3vw, 42px);
+    line-height: 1.18;
     color: var(--ink);
     margin: 0;
-    max-width: 560px;
+    max-width: 660px;
   }
   .bio .desc {
-    font-size: 12.5px;
-    line-height: 1.8;
-    color: var(--mute);
+    font-size: clamp(14.5px, 1.35vw, 17px);
+    line-height: 1.7;
+    color: color-mix(in srgb, var(--ink) 75%, var(--mute));
     margin: 0;
-    max-width: 520px;
+    max-width: 620px;
+    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    will-change: opacity, transform;
+  }
+  .q-char {
+    position: relative;
+    opacity: 0;
+  }
+  .q-char[data-caret='true']::after {
+    content: '|';
+    position: absolute;
+    right: -0.15ch;
+    top: -0.05em;
+    color: var(--pri);
+    font-weight: 700;
+    animation: caret-blink 0.9s steps(1) infinite;
+    pointer-events: none;
+  }
+  @keyframes caret-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
   }
   .bio .b {
     opacity: 0;
@@ -314,36 +501,27 @@
   }
   .btns {
     display: flex;
-    gap: 10px;
+    gap: 26px;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 2px;
+    margin-top: 4px;
   }
   .btn {
-    font: 700 12px 'Space Mono', monospace;
+    font: 400 12px 'Space Mono', monospace;
     text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 99px;
-    border: 1.5px solid var(--ink);
+    padding: 4px 2px;
+    border: 0;
+    border-radius: 0;
     color: var(--ink);
-    transition: transform 0.25s, background 0.25s, color 0.25s;
+    background: transparent;
+    transition: color 0.2s, transform 0.2s;
   }
   .btn.pri {
-    background: var(--pri);
-    border-color: var(--pri);
-    color: #fff;
+    color: var(--ink);
   }
   .btn:hover {
-    transform: translateY(-2px);
-  }
-  .btn:not(.pri):hover {
-    background: var(--ink);
-    color: var(--bg);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) .btn.pri {
-      color: #0f0f12;
-    }
+    color: var(--pri);
+    transform: translateY(-1px);
   }
   .hint {
     position: absolute;
@@ -369,11 +547,37 @@
     color: #6e6e76;
   }
 
-  /* ---------- Kartu proyek: hanya perilaku hover yang tetap di CSS
-     (v4 menerapkan translate/rotate sebagai properti terpisah sehingga
-     urutan transform berbeda dari `transform: translate() rotate()`). */
-  .pc:hover {
-    transform: translateY(-6px) rotate(-0.6deg);
+  /* ---------- Kartu proyek: 3D flip + perilaku hover ---------- */
+  .pc-scene {
+    perspective: 1400px;
+  }
+  .pc {
+    transform-style: preserve-3d;
+    transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .pc-scene:hover .pc:not(.is-flipped) {
+    transform: translateY(-6px) rotate(-0.5deg) rotateY(5deg);
+  }
+  .pc.is-flipped {
+    transform: rotateY(180deg);
+  }
+  .pc-scene:hover .pc.is-flipped {
+    transform: translateY(-6px) rotate(0.5deg) rotateY(175deg);
+  }
+  .pc-face {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+  .pc-back {
+    transform: rotateY(180deg) translateZ(1px);
+  }
+  .pc-flip-ico {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pc-scene:hover .pc-flip-ico {
+    transform: rotate(180deg);
   }
   /* Preview gambar kartu proyek: gaya ini menempel ke `.shot img` supaya
      cukup menaruh <img> di JSX (lihat design.md §8) tanpa utility. */
@@ -385,11 +589,11 @@
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .pc:hover .shot img {
+  .pc-scene:hover .shot img {
     transform: scale(1.05);
   }
 
-  /* ---------- CTA kontak: tipografi bersarang ---------- */
+  /* ---------- CTA kontak: tipografi bersarang & animasi masuk (Editorial Mask Rise) ---------- */
   .cta-box h2 {
     font-size: clamp(40px, 7.2vw, 108px);
     line-height: 0.98;
@@ -404,6 +608,101 @@
     text-transform: none;
     font-size: 0.95em;
   }
+  .cta-reveal-line {
+    transform: translate3d(0, 115%, 0);
+    opacity: 0;
+    will-change: transform, opacity;
+    transition:
+      transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.2s ease;
+  }
+  .cta-box.is-revealed .cta-reveal-line {
+    transform: translate3d(0, 0%, 0);
+    opacity: 1;
+    transition:
+      transform 0.62s cubic-bezier(0.22, 1, 0.36, 1) var(--cta-d, 0ms),
+      opacity 0.38s ease var(--cta-d, 0ms);
+  }
+  .cta-reveal-btn {
+    transform: translate3d(0, 18px, 0) scale(0.92);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    transition:
+      transform 0.26s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.18s ease,
+      translate 0.2s ease;
+  }
+  .cta-box.is-revealed .cta-reveal-btn {
+    transform: translate3d(0, 0px, 0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+    transition:
+      transform 0.58s cubic-bezier(0.22, 1, 0.36, 1) 260ms,
+      opacity 0.38s ease 260ms,
+      translate 0.2s ease;
+  }
+
+  /* ---------- Modal Kontak: Editorial Letterhead Unfold ---------- */
+  .cta-modal-backdrop {
+    opacity: 0;
+    transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .cta-modal-backdrop.is-open {
+    opacity: 1;
+    transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cta-modal-card {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(0.94);
+    will-change: transform, opacity;
+    transition:
+      transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.26s ease;
+  }
+  .cta-modal-backdrop.is-open .cta-modal-card {
+    opacity: 1;
+    transform: translate3d(0, 0px, 0) scale(1);
+  }
+  .cta-modal-backdrop.is-closing .cta-modal-card {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.95);
+    transition:
+      transform 0.22s cubic-bezier(0.4, 0, 1, 1),
+      opacity 0.2s ease;
+  }
+  .cta-modal-row {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    will-change: transform, opacity;
+    transition:
+      transform 0.36s cubic-bezier(0.22, 1, 0.36, 1) var(--row-d, 0ms),
+      opacity 0.28s ease var(--row-d, 0ms);
+  }
+  .cta-modal-backdrop.is-open .cta-modal-row {
+    opacity: 1;
+    transform: translate3d(0, 0px, 0);
+  }
+  .cta-modal-backdrop.is-closing .cta-modal-row {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+    transition:
+      transform 0.16s ease 0ms,
+      opacity 0.15s ease 0ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-reveal-line,
+    .cta-reveal-btn,
+    .cta-modal-backdrop,
+    .cta-modal-card,
+    .cta-modal-row {
+      transform: none !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transition: none !important;
+    }
+  }
 
   /* ---------- Thank you / footer reveal ----------
      margin-bottom `.reveal-main` dan tinggi `.thanks` WAJIB memakai
@@ -413,7 +712,7 @@
     z-index: 1;
     background: var(--bg);
     margin-bottom: clamp(120px, 18vw, 230px);
-    padding-bottom: 50px;
+    padding-bottom: 145px;
     border-radius: 0 0 48px 48px;
   }
   .thanks {
@@ -457,13 +756,15 @@
     color: var(--ink);
     transition: background 0.3s, color 0.3s;
   }
-  .tabbar.on-dark {
+  .tabbar.on-dark,
+  .tb-home.on-dark {
     background: rgba(24, 24, 30, 0.6);
     border-color: rgba(255, 255, 255, 0.14);
     color: #f6f1e7;
   }
   .tb {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -474,7 +775,9 @@
     border: 0;
     background: none;
     color: inherit;
-    font: 700 9.5px 'Space Mono', monospace;
+    font: 700 8.5px 'Space Mono', monospace;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
     text-decoration: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -509,7 +812,15 @@
     object-fit: contain;
     display: block;
   }
-  .tb:has(img) .tph {
+  .tb-home img {
+    width: 35px;
+    height: 35px;
+    border-radius: 11px;
+    object-fit: cover;
+    display: block;
+  }
+  .tb:has(img) .tph,
+  .tb-home:has(img) .tph {
     display: none;
   }
 
@@ -523,7 +834,7 @@
     }
     .reveal-main {
       margin-bottom: 210px;
-      padding-bottom: 30px;
+      padding-bottom: 140px;
       border-radius: 0 0 32px 32px;
     }
     .thanks {
@@ -533,20 +844,53 @@
     .ty {
       font-size: clamp(44px, 15vw, 90px);
     }
+    .stk-0 {
+      top: -38px;
+      left: 0;
+    }
+    .stk-1 {
+      top: -40px;
+      right: 0;
+    }
+    .stk-2 {
+      bottom: -28px;
+      right: 8%;
+    }
+    .stk-inner {
+      font-size: 12.5px;
+    }
+    .stk-r1,
+    .stk-r2 {
+      padding: 4px 7px 3.5px;
+      gap: 4px;
+    }
+    .stk-r2 {
+      padding-top: 3.5px;
+    }
+    .stk-cut1 .stk-r2,
+    .stk-cut3 .stk-r1 {
+      margin-right: 16px;
+    }
+    .stk-cut2 .stk-r1 {
+      margin-right: 14px;
+    }
     .bio {
-      gap: 10px;
-      margin-top: 18px;
-      padding-top: 16px;
+      gap: 14px;
+      margin-top: 34px;
+      padding-top: 22px;
     }
     .bio .lead {
       font-size: clamp(22px, 6.4vw, 30px);
     }
     .bio .desc {
-      font-size: 12px;
-      line-height: 1.7;
+      font-size: 13.5px;
+      line-height: 1.65;
+    }
+    .btns {
+      gap: 18px;
     }
     .btn {
-      padding: 10px 16px;
+      padding: 4px 2px;
       font-size: 11.5px;
     }
   }
@@ -565,10 +909,168 @@
   background: rgba(255, 255, 255, 0.14);
 }
 /* Tab aktif: `.act` di-set lewat classList (bukan React state). */
-.tb.act {
+.tb.act,
+.tb-home.act {
   color: var(--pri);
   background: color-mix(in srgb, var(--pri) 14%, transparent);
 }
-.tabbar.on-dark .tb.act {
+.tabbar.on-dark .tb.act,
+.tb-home.on-dark.act {
   color: #9aa6ff;
+}
+
+/* Area jalur pengalaman 2D */
+.xp-svg-node {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.xp-svg-node:focus,
+.xp-svg-node:focus-visible {
+  outline: none;
+}
+.xp-svg-dot .xp-dot-glow {
+  fill: var(--dot-color, var(--pri));
+  opacity: 0.14;
+  transition: opacity 0.18s;
+}
+.xp-svg-dot.on .xp-dot-glow {
+  opacity: 0.3;
+}
+.xp-svg-dot.current .xp-dot-glow {
+  opacity: 0.45;
+}
+.xp-svg-dot .xp-dot-bg {
+  fill: var(--bg);
+}
+.xp-svg-dot .xp-dot-core {
+  fill: var(--dot-color, var(--pri));
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  transition: fill 0.18s, stroke 0.18s;
+}
+.xp-svg-dot.on .xp-dot-core {
+  fill: var(--dot-color, var(--pri));
+  stroke: #ffffff;
+  stroke-width: 2.2;
+}
+.xp-svg-tag {
+  transition: opacity 0.15s;
+}
+.xp-svg-date {
+  fill: var(--pri);
+  font-family: 'Space Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.xp-svg-title {
+  fill: var(--ink);
+  font-family: 'Anton', 'Impact', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.xp-svg-prev {
+  fill: var(--lime);
+  font-family: 'Space Mono', monospace;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.xp-svg-node:hover .xp-svg-prev {
+  text-decoration: underline;
+}
+@media (max-width: 820px) {
+  .xp-svg-date {
+    font-size: 8.5px;
+    letter-spacing: 0.03em;
+  }
+  .xp-svg-title {
+    font-size: 13px;
+  }
+}
+.xp-head {
+  background: var(--color-brand);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--color-brand) 28%, transparent),
+    0 0 12px var(--color-brand);
+  will-change: left, top, transform;
+}
+.xp-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xp-photo-placeholder {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 10px,
+    color-mix(in srgb, currentColor 8%, transparent) 10px,
+    color-mix(in srgb, currentColor 8%, transparent) 12px
+  );
+}
+.xp-photo:has(img) {
+  border-style: solid;
+}
+.xp-photo:has(img) .xp-photo-placeholder,
+.xp-photo:has(img) > svg,
+.xp-photo:has(img) > span {
+  display: none;
+}
+
+
+
+
+/* ---------- Tabel Services: garis dikendalikan transisi (LineToTable & Services) ---------- */
+.svc-table {
+  border-top-color: color-mix(in srgb, var(--ink) calc(var(--svc-line, 1) * 100%), transparent);
+}
+.svc-table > div {
+  position: relative;
+}
+.svc-table.svc-ready > div {
+  transition: background-color 0.25s, color 0.25s;
+}
+.svc-table.svc-ready > div:hover {
+  background-color: var(--pri);
+  color: #ffffff;
+}
+.svc-table > div::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: var(--ink);
+  transform-origin: top;
+  transform: scaleY(var(--svc-drop, 1));
+  pointer-events: none;
+}
+.svc-table > div:last-child::after {
+  display: none;
+}
+@media (max-width: 820px) {
+  .svc-table > div {
+    border-bottom: 0 solid var(--ink);
+  }
+  .svc-table > div:nth-child(-n + 2) {
+    border-bottom-width: 1.5px;
+    border-bottom-color: color-mix(in srgb, var(--ink) calc(var(--svc-mid, var(--svc-drop, 1)) * 100%), transparent);
+  }
+  .svc-table > div:nth-child(3)::after {
+    transform: scaleY(var(--svc-drop-r2, var(--svc-drop, 1)));
+  }
+  .svc-table > div:nth-child(even)::after {
+    display: none;
+  }
+}
+
+/* Serah-terima Experience → Services: jalur asli disembunyikan saat overlay garis aktif */
+:root[data-xp-line] .xp-world {
+  visibility: hidden;
 }
