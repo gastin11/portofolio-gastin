@@ -111,6 +111,7 @@ export const content = {
             'Manajemen data profil kandidat terpusat & siap pakai',
           ],
           href: '#',
+          image: '/images/pathly.png',
         },
         {
           cls: 'p2',
@@ -120,6 +121,7 @@ export const content = {
           desc: 'Aplikasi pembuat CV ramah sistem ATS yang menyusun riwayat karier, pengalaman, dan keahlian ke dalam struktur standar rekruter secara otomatis dengan pratinjau langsung serta ekspor PDF instan.',
           highlights: ['Struktur dokumen terstandar ramah ATS', 'Pratinjau dokumen secara real-time', 'Pemformatan otomatis & ekspor PDF'],
           href: '#',
+          image: '/images/ats-cv-builder.png',
         },
         {
           cls: 'p3',
@@ -129,6 +131,7 @@ export const content = {
           desc: 'Sistem otomasi yang membaca dan mengekstrak informasi dari berbagai berkas sertifikat secara otomatis, lalu mengirimkan data poin kredit mahasiswa langsung ke portal akademik tanpa perlu membuka dan mengisi formulir web satu per satu.',
           highlights: ['Ekstraksi data otomatis dari file sertifikat', 'Pengiriman langsung ke sistem tanpa akses web manual', 'Pemrosesan banyak sertifikat sekaligus'],
           href: '#',
+          image: '/images/student-credit-point.jpg',
         },
         {
           cls: 'p4',
@@ -138,6 +141,7 @@ export const content = {
           desc: 'Platform manajemen SDM terintegrasi untuk mengelola data karyawan, pencatatan kehadiran, pengajuan cuti, hingga alur persetujuan administrasi internal secara terpusat dan terstruktur.',
           highlights: ['Manajemen data karyawan & struktur divisi', 'Pencatatan kehadiran & alur persetujuan cuti', 'Rekapitulasi laporan operasional SDM'],
           href: '#',
+          image: '/images/hr-management.png',
         },
       ],
     },
@@ -319,6 +323,7 @@ export const content = {
             'Centralized candidate profile & credential management',
           ],
           href: '#',
+          image: '/images/pathly.png',
         },
         {
           cls: 'p2',
@@ -328,6 +333,7 @@ export const content = {
           desc: 'An ATS-friendly resume builder that organizes career history, experience, and skills into recruiter-standard layouts with live preview and instant PDF export.',
           highlights: ['Recruiter-ready ATS-compliant structure', 'Real-time interactive document preview', 'Automated formatting & instant PDF export'],
           href: '#',
+          image: '/images/ats-cv-builder.png',
         },
         {
           cls: 'p3',
@@ -337,6 +343,7 @@ export const content = {
           desc: 'An automated pipeline that extracts structured data from uploaded certificate files and submits student credit points directly to the academic portal without manually opening or filling out web forms.',
           highlights: ['Automated data extraction from certificate files', 'Direct portal submission without manual web access', 'Batch certificate processing workflow'],
           href: '#',
+          image: '/images/student-credit-point.jpg',
         },
         {
           cls: 'p4',
@@ -346,6 +353,7 @@ export const content = {
           desc: 'An integrated human resource management system designed to centralize employee records, attendance tracking, leave approvals, and internal administrative workflows.',
           highlights: ['Centralized employee & department records', 'Attendance tracking & leave approval workflows', 'Structured HR operational reporting'],
           href: '#',
+          image: '/images/hr-management.png',
         },
       ],
     },

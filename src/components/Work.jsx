@@ -214,13 +214,23 @@ export default function Work() {
                     ))}
                   </small>
                   <div
-                    className={`shot relative my-[18px] grid min-h-[190px] flex-1 place-items-center overflow-hidden rounded-shot border-[1.5px] border-dashed max-md:min-h-[160px] max-md:rounded-[22px] ${card.shot}`}
+                    className={`shot relative my-[18px] grid min-h-[190px] flex-1 place-items-center overflow-hidden rounded-shot max-md:min-h-[160px] max-md:rounded-[22px] ${
+                      p.image
+                        ? ''
+                        : `border-[1.5px] border-dashed ${card.shot}`
+                    }`}
                   >
-                    <span className="text-[11px] uppercase tracking-[0.14em] opacity-[0.65]">
-                      Preview 16:10
-                    </span>
-                    {/* Ganti placeholder dengan:
-                        <img src="images/p1.jpg" alt="..." /> */}
+                    {p.image ? (
+                      <img
+                        src={p.image}
+                        alt={Array.isArray(p.title) ? p.title.join(' ') : p.title}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="text-[11px] uppercase tracking-[0.14em] opacity-[0.65]">
+                        Preview 16:10
+                      </span>
+                    )}
                   </div>
                   <div className="relative flex w-full items-end justify-between gap-3 max-md:flex-col max-md:items-start max-md:gap-3">
                     <div className="disp flex min-h-[1.88em] min-w-0 flex-1 flex-col justify-end text-[clamp(24px,2.8vw,38px)] leading-[0.94] max-md:text-[clamp(24px,6.8vw,32px)]">
