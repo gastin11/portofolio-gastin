@@ -218,8 +218,8 @@ export const content = {
         charUnit: 'KARAKTER',
         cancel: 'Batal',
         send: 'KIRIM PESAN ↗',
-        sentNote: 'Membuka aplikasi email Anda — atau lanjutkan lewat:',
-        openGmail: 'Buka di Gmail Web ↗',
+        sentNote: 'Aplikasi email belum terbuka?',
+        openGmail: 'Buka Gmail Web ↗',
       },
     },
     thanks: {
@@ -430,8 +430,8 @@ export const content = {
         charUnit: 'CHARS',
         cancel: 'Cancel',
         send: 'SEND MESSAGE ↗',
-        sentNote: 'Opening your mail client — or continue via:',
-        openGmail: 'Open in Gmail Web ↗',
+        sentNote: "Mail app didn't open?",
+        openGmail: 'Open Gmail Web ↗',
       },
     },
     thanks: {

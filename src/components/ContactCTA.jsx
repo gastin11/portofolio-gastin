@@ -542,15 +542,21 @@ export default function ContactCTA() {
                   />
                 </div>
 
-                {/* Banner bantuan jika sudah klik kirim (opsi langsung ke Gmail Web) */}
+                {/* Baris bantuan ringkas jika sudah klik kirim (opsi langsung ke Gmail Web) */}
                 {hasSubmitted && (
-                  <div className="flex flex-wrap items-center justify-between gap-2 bg-lime/20 px-6 py-2.5 text-[11px] max-md:px-4 max-md:py-2 max-md:text-[10.5px]">
-                    <span className="font-bold text-ink">{m.sentNote}</span>
+                  <div className="flex items-center justify-between gap-3 bg-pri/[0.05] px-6 py-2.5 text-[11px] max-md:px-4 max-md:py-2 max-md:text-[10.5px]">
+                    <span className="flex items-center gap-2 text-mute">
+                      <span
+                        className="h-1.5 w-1.5 shrink-0 rounded-full bg-pri"
+                        aria-hidden="true"
+                      />
+                      <span>{m.sentNote}</span>
+                    </span>
                     <a
                       href={getGmailComposeUrl()}
                       target="_blank"
                       rel="noreferrer"
-                      className="font-bold text-pri underline"
+                      className="shrink-0 rounded-pill border border-pri/30 bg-pri/10 px-3 py-1 font-mono text-[10.5px] font-bold tracking-[0.02em] text-pri no-underline transition-colors hover:border-pri hover:bg-pri hover:text-white max-md:px-2.5 max-md:text-[10px]"
                     >
                       {m.openGmail}
                     </a>
