@@ -196,7 +196,7 @@ export default function Work() {
                 aria-pressed={isFlipped}
                 onClick={() => toggleFlip(p.cls)}
                 onKeyDown={(e) => onKeyToggle(e, p.cls)}
-                className={`pc ${p.cls} ${isFlipped ? 'is-flipped' : ''} group relative grid h-full min-h-[450px] w-full flex-1 cursor-pointer select-none max-md:min-h-[400px]`}
+                className={`pc ${p.cls} ${isFlipped ? 'is-flipped' : ''} group relative grid h-full min-h-[450px] w-full flex-1 cursor-pointer select-none max-md:h-[430px] max-md:min-h-[430px]`}
               >
                 {/* SISI DEPAN KARTU */}
                 <div
@@ -260,7 +260,7 @@ export default function Work() {
                       </span>
                       <span className="text-[12px]">{p.no}</span>
                     </div>
-                    <div className={`mt-3.5 border-b pb-3.5 ${card.divider}`}>
+                    <div className={`mt-3.5 border-b pb-3.5 max-md:mt-2.5 max-md:pb-2.5 ${card.divider}`}>
                       <div className="disp flex min-h-[1.9em] flex-col justify-end text-[clamp(24px,2.8vw,36px)] leading-[0.95] max-md:text-[clamp(22px,6.4vw,30px)]">
                         {p.title.map((line, i) => (
                           <span key={i} className="block">
@@ -272,13 +272,13 @@ export default function Work() {
                   </div>
 
                   <div
-                    className={`my-4 flex flex-1 flex-col justify-center rounded-shot border p-5 max-md:rounded-[20px] max-md:p-4 ${card.backBox}`}
+                    className={`my-4 flex flex-1 flex-col justify-center rounded-shot border p-5 max-md:my-2.5 max-md:rounded-[20px] max-md:p-3.5 ${card.backBox}`}
                   >
-                    <p className="text-[13.5px] leading-[1.68] max-md:text-[12.5px] max-md:leading-[1.6]">
+                    <p className="text-[13.5px] leading-[1.68] max-md:text-[12px] max-md:leading-[1.5]">
                       {p.desc}
                     </p>
                     {p.highlights && (
-                      <ul className="mt-3.5 space-y-1.5 text-[12px] leading-[1.45] opacity-90 max-md:mt-3 max-md:text-[11.5px]">
+                      <ul className="mt-3.5 space-y-1.5 text-[12px] leading-[1.45] opacity-90 max-md:mt-2 max-md:space-y-1 max-md:text-[11px]">
                         {p.highlights.map((item) => (
                           <li key={item} className="flex items-start gap-2">
                             <span aria-hidden="true">→</span>
