@@ -138,15 +138,17 @@ export default function Work() {
         return
       }
 
+      const about = document.getElementById('about')
+      const startTop = about ? Math.min(vh, about.offsetHeight) : vh
       const lastScene = scenes[scenes.length - 1]
-      const contentBottom = lastScene.offsetTop + lastScene.offsetHeight + 16
-      const pSection = clamp01(1 - secRect.top / vh)
+      const contentBottom = lastScene.offsetTop + lastScene.offsetHeight + 64
+      const pSection = clamp01(1 - secRect.top / startTop)
       const shiftY = -(1 - pSection) * contentBottom
       const tx = `translate3d(0, ${shiftY.toFixed(1)}px, 0)`
 
-      // Clip bagian atas seksi tepat di balik sudut membulat bawah #about (-60px)
+      // Clip bagian atas seksi tepat di balik sudut membulat bawah #about (-48px)
       // agar saat digeser ke atas sejauh -contentBottom tidak pernah tembus di atas #about.
-      sec.style.clipPath = 'inset(-60px -100px -200px -100px)'
+      sec.style.clipPath = 'inset(-48px -100px -200px -100px)'
       head.style.opacity = ''
       head.style.transform = tx
 
@@ -196,7 +198,7 @@ export default function Work() {
                 aria-pressed={isFlipped}
                 onClick={() => toggleFlip(p.cls)}
                 onKeyDown={(e) => onKeyToggle(e, p.cls)}
-                className={`pc ${p.cls} ${isFlipped ? 'is-flipped' : ''} group relative grid h-full min-h-[450px] w-full flex-1 cursor-pointer select-none max-md:h-[430px] max-md:min-h-[430px]`}
+                className={`pc ${p.cls} ${isFlipped ? 'is-flipped' : ''} group relative grid grid-rows-[minmax(0,1fr)] h-full min-h-[450px] w-full flex-1 cursor-pointer select-none max-md:h-[430px] max-md:min-h-[430px]`}
               >
                 {/* SISI DEPAN KARTU */}
                 <div
