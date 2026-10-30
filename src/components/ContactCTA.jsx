@@ -298,9 +298,9 @@ export default function ContactCTA() {
   }, [isOpen])
 
   const buildFormattedBody = () => {
-    const senderLine = from.trim() ? `${m.fromLabel}: ${from.trim()}\n` : ''
-    const toLine = `${m.toLabel}: ${recipient}\n`
-    return `${senderLine}${toLine}----------------------------------------\n\n${message.trim()}`
+    const msg = message.trim()
+    const sender = from.trim()
+    return sender ? `${msg}\n\n— ${sender}` : msg
   }
 
   const getGmailComposeUrl = () => {
@@ -442,7 +442,6 @@ export default function ContactCTA() {
                     id="mail-from"
                     ref={fromInputRef}
                     type="text"
-                    required
                     value={from}
                     onChange={(e) => setFrom(e.target.value)}
                     placeholder={m.fromPlaceholder}

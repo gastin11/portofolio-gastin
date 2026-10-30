@@ -951,27 +951,23 @@
    ini aman walau elemennya memakai utility untuk properti yang sama. */
 .shot:has(img) {
   border: 0;
-  background: #ffffff;
+  background: none;
+  overflow: visible;
 }
-/* Kartu p1 (Pathly), p3 (Student Point) & p4 (HR System):
-   gunakan latar dark #14141a + inset + drop-shadow agar tampilan window preview rapi, berdimensi, dan konsisten */
-.p1 .shot:has(img),
-.p3 .shot:has(img),
-.p4 .shot:has(img) {
-  background: #14141a;
-}
-.p1 .shot:has(img) img,
-.p3 .shot:has(img) img,
-.p4 .shot:has(img) img {
+/* Foto melayang langsung di atas warna kartu: tanpa latar kotak, bayangan berlapis
+   (dekat + jauh) supaya terlihat sedikit terangkat/3D. drop-shadow mengikuti piksel
+   gambar, jadi area sisa dari object-fit: contain tetap transparan tanpa bayangan. */
+.shot:has(img) img {
   inset: 10px;
   width: calc(100% - 20px);
   height: calc(100% - 20px);
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.14)) drop-shadow(0 18px 24px rgba(0, 0, 0, 0.28));
+}
+.pc-scene:hover .shot:has(img) img {
+  transform: translateY(-4px) scale(1.02);
 }
 @media (max-width: 820px) {
-  .p1 .shot:has(img) img,
-  .p3 .shot:has(img) img,
-  .p4 .shot:has(img) img {
+  .shot:has(img) img {
     inset: 8px;
     width: calc(100% - 16px);
     height: calc(100% - 16px);
