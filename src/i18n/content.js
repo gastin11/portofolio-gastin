@@ -163,7 +163,7 @@ export const content = {
         { date: 'Sep 2025 – Sekarang', type: 'Pekerjaan', title: 'Full-stack Developer', org: 'Sitezet', desc: 'Merilis 10+ aplikasi web dengan tingkat ketepatan waktu 100% dan mempercepat siklus pengembangan frontend hingga 30%.' },
         { date: 'Nov 2025 – 2028', type: 'Sertifikasi', title: 'Junior Web Programmer', org: 'Badan Nasional Sertifikasi Profesi (BNSP)', desc: 'Sertifikasi kompetensi nasional pemrograman web oleh BNSP (pelaksanaan April 2025). Memvalidasi keahlian pengembangan aplikasi web terstruktur, basis data, dan standar clean code.' },
         { date: 'Nov 2025 – Feb 2026', type: 'Freelance', title: 'Web Developer', org: 'PT. Bunyu Tapa Energi', desc: 'Membangun HRIS berbasis web dengan Laravel dan MySQL yang memangkas waktu administrasi HR hingga 70%, dengan skor UAT 90%.' },
-        { date: 'Sep 2026', type: 'Kelulusan', title: 'Lulusan Terbaik', org: 'S1 Sistem Informasi · IPK 3,85', desc: 'Lulus sebagai mahasiswa terbaik angkatan dengan skripsi perancangan Sistem Informasi Manajemen SDM berbasis web.' },
+        { date: 'Sep 2026', type: 'Kelulusan', title: 'Lulusan Terbaik', org: 'S1 Sistem Informasi · IPK 3,85', desc: 'Lulus sebagai mahasiswa terbaik angkatan dengan skripsi perancangan Sistem Informasi Manajemen SDM berbasis web.', img: '/images/top-graduate.png' },
       ],
     },
     services: {
@@ -375,7 +375,7 @@ export const content = {
         { date: 'Sep 2025 – Present', type: 'Work', title: 'Full-stack Developer', org: 'Sitezet', desc: 'Shipped 10+ web applications with a 100% on-time rate and accelerated the frontend development cycle by 30%.' },
         { date: 'Nov 2025 – 2028', type: 'Certification', title: 'Junior Web Programmer', org: 'Badan Nasional Sertifikasi Profesi (BNSP)', desc: 'National competency certification in web programming by BNSP (assessed April 2025). Validates structured web application development, database management, and clean code standards.' },
         { date: 'Nov 2025 – Feb 2026', type: 'Freelance', title: 'Web Developer', org: 'PT. Bunyu Tapa Energi', desc: 'Built a web-based HRIS with Laravel and MySQL that cut HR admin time by 70%, scoring 90% in UAT.' },
-        { date: 'Sep 2026', type: 'Graduation', title: 'Top Graduate', org: 'B.Sc. Information Systems · GPA 3.85', desc: 'Graduated as the top student of the cohort with a thesis on a web-based Human Resource Management Information System.' },
+        { date: 'Sep 2026', type: 'Graduation', title: 'Top Graduate', org: 'B.Sc. Information Systems · GPA 3.85', desc: 'Graduated as the top student of the cohort with a thesis on a web-based Human Resource Management Information System.', img: '/images/top-graduate.png' },
       ],
     },
     services: {
