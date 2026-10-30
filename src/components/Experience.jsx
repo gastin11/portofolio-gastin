@@ -24,7 +24,7 @@ const TONES = [
     dot: 'var(--pri)',
     card: 'bg-pri text-white',
     photoBg: 'bg-[#18269e] text-white',
-    tag: 'bg-white text-pri',
+    tag: 'bg-pri text-white',
     divider: 'border-white/20',
     sub: 'text-white',
     navBtn: 'border-white/30 text-white hover:bg-white hover:text-pri',
@@ -601,18 +601,11 @@ export default function Experience() {
                       </span>
 
                       {it.img ? (
-                        <div className="absolute inset-0 flex items-center justify-center p-3 pb-8 max-md:p-2.5 max-md:pb-6">
-                          <img
-                            src={it.img}
-                            alt={it.title}
-                            loading="lazy"
-                            className="max-h-full max-w-full rounded-[6px] object-contain shadow-[0_4px_16px_rgba(0,0,0,0.28)] transition-transform duration-200 hover:scale-[1.02] cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              window.open(it.img, '_blank')
-                            }}
-                          />
-                        </div>
+                        <img
+                          src={it.img}
+                          alt={it.title}
+                          className={`absolute inset-0 h-full w-full ${it.imgFit || 'object-cover'}`}
+                        />
                       ) : (
                         <div className="xp-photo-placeholder absolute inset-0 flex flex-col items-center justify-center p-4">
                           {/* Viewfinder corner bracket kanan atas */}
@@ -638,7 +631,10 @@ export default function Experience() {
                     </div>
 
                     {/* Strip overlap: Judul utama di kiri & Angka Indeks Anton di kanan sama-sama memotong batas foto (50% di atas garis, 50% di bawah garis) */}
-                    <div className="relative z-[2] -mt-7 flex items-center justify-between gap-3 px-6">
+                    <div
+                      style={{ '--xp-bg': tone.dot }}
+                      className="xp-overlap-stroke relative z-[2] -mt-7 flex items-center justify-between gap-3 px-6"
+                    >
                       <h3 className="disp min-w-0 flex-1 text-[clamp(26px,2.6vw,36px)] leading-[0.92] tracking-[-0.01em]">
                         {it.title}
                       </h3>
@@ -729,18 +725,11 @@ export default function Experience() {
                 </button>
 
                 {modalItem.img ? (
-                  <div className="absolute inset-0 flex items-center justify-center p-2.5 pb-6">
-                    <img
-                      src={modalItem.img}
-                      alt={modalItem.title}
-                      loading="lazy"
-                      className="max-h-full max-w-full rounded-[5px] object-contain shadow-[0_3px_12px_rgba(0,0,0,0.28)] transition-transform duration-200 active:scale-[0.98] cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        window.open(modalItem.img, '_blank')
-                      }}
-                    />
-                  </div>
+                  <img
+                    src={modalItem.img}
+                    alt={modalItem.title}
+                    className={`absolute inset-0 h-full w-full ${modalItem.imgFit || 'object-cover'}`}
+                  />
                 ) : (
                   <div className="xp-photo-placeholder absolute inset-0 flex flex-col items-center justify-center p-4">
                     <div className="flex items-center gap-2 font-mono text-[10px] font-bold tracking-[0.14em] uppercase opacity-75">
@@ -764,7 +753,10 @@ export default function Experience() {
               </div>
 
               {/* Strip overlap: Judul di kiri & Angka Indeks Anton di kanan memotong batas foto */}
-              <div className="relative z-[2] -mt-5 flex items-center justify-between gap-2.5 px-5">
+              <div
+                style={{ '--xp-bg': modalTone.dot }}
+                className="xp-overlap-stroke relative z-[2] -mt-5 flex items-center justify-between gap-2.5 px-5"
+              >
                 <h3 className="disp min-w-0 flex-1 text-[24px] leading-[0.96] tracking-[-0.01em]">
                   {modalItem.title}
                 </h3>

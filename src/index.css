@@ -1062,7 +1062,10 @@
   will-change: left, top, transform;
 }
 .xp-photo img {
-  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .xp-photo-placeholder {
   background-image: repeating-linear-gradient(
@@ -1074,19 +1077,16 @@
   );
 }
 .xp-photo:has(img) {
-  border-style: solid;
-  background-image: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 10px,
-    color-mix(in srgb, currentColor 7%, transparent) 10px,
-    color-mix(in srgb, currentColor 7%, transparent) 12px
-  );
+  border-bottom-color: transparent;
 }
 .xp-photo:has(img) .xp-photo-placeholder,
-.xp-photo:has(img) > svg,
-.xp-photo:has(img) > span {
+.xp-photo:has(img) > svg {
   display: none;
+}
+.xp-overlap-stroke {
+  paint-order: stroke fill;
+  -webkit-text-stroke: 6px var(--xp-bg, var(--pri));
+  stroke-linejoin: round;
 }
 
 
